@@ -108,15 +108,6 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         jsonResponse["message"] = "success";
         jsonResponse["method"] = "patch";
         jsonResponse["idDevice"] = BLE_NAME;
-        KalSuhu = jsonResponse["suhu"];
-        Kalkelembaban = jsonResponse["kelembaban"];
-        KalNitrogen = jsonResponse["nitrogen"];
-        KalPhospor = jsonResponse["phospor"];
-        KalKalium = jsonResponse["kalium"];
-        KalSalinitas = jsonResponse["salinitas"];
-        KalKonduktifitas = jsonResponse["konduktifitas"];
-        KalPH = jsonResponse["ph"];
-        KalTDS = jsonResponse["tds"];
         saveToEEPROM(doc);
 
         String jsonString;
@@ -128,20 +119,9 @@ class MyCallbacks : public BLECharacteristicCallbacks {
       else if (std::string(reqMethod) == "kal") {
         DynamicJsonDocument jsonResponse(500);  
         retrieveFromEEPROM(jsonResponse);
-        EEPROMRead(); 
         jsonResponse["status"] = true;
         jsonResponse["message"] = "success";
         jsonResponse["method"] = "kal";
-        jsonResponse["idDevice"] = BLE_NAME;
-        jsonResponse["suhu"] = EEPROMSuhu;
-        jsonResponse["kelembaban"] = EEPROMKelembaban;
-        jsonResponse["nitrogen"] = EEPROMNitrogen;
-        jsonResponse["phospor"] = EEPROMPhospor;
-        jsonResponse["kalium"] = EEPROMKalium;
-        jsonResponse["salinitas"] = EEPROMSalinitas;
-        jsonResponse["konduktifitas"] = EEPROMKonduktifitas;
-        jsonResponse["ph"] = EEPROMPH;
-        jsonResponse["tds"] = EEPROMTDS;
 
         String jsonString;
         serializeJson(jsonResponse, jsonString);
@@ -265,6 +245,6 @@ void setup() {
 }
 
 void loop() {
- // delay(2000);
+
       bacaSensor(); 
 }

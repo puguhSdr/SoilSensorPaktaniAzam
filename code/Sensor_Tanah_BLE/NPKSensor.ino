@@ -9,36 +9,6 @@ void bacaSensor()
   DataKalium();
   DataSalinitas();
   DataTDS();
-  Serial.print("Hum:");
-  Serial.print(Kelembaban);
-  Serial.print(" ");
-  Serial.print("Temp:");
-  Serial.print(Suhu);
-  Serial.print(" ");
-  Serial.print("Cond:");
-  Serial.print(Konduktifitas);
-  Serial.print(" ");
-  Serial.print("PH:");
-  Serial.print(PH);
-  Serial.print(" ");
-  Serial.print("N:");
-  Serial.print(Nitrogen);
-  Serial.print(" ");
-  Serial.print("P:");
-  Serial.print(Phospor);
-  Serial.print(" ");
-  Serial.print("K:");
-  Serial.print(Kalium);
-  Serial.print(" ");
-  Serial.print("Sal:");
-  Serial.print(Salinitas);
-  Serial.print(" ");
-  Serial.print("TDS:");
-  Serial.print(TDS);
-  Serial.print(" ");
-
-  Serial.println();
- // delay();
 }
 
 
@@ -46,7 +16,6 @@ void bacaSensor()
 
 
 void DataKelembaban(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -54,12 +23,9 @@ void DataKelembaban(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -70,7 +36,6 @@ void DataKelembaban(){
 }
 
 void DataSuhu(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -78,12 +43,9 @@ void DataSuhu(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -94,7 +56,6 @@ void DataSuhu(){
 }
 
 void DataKonduktifitas(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -102,12 +63,9 @@ void DataKonduktifitas(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -118,7 +76,6 @@ void DataKonduktifitas(){
 }
 
 void DataPH(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -126,12 +83,9 @@ void DataPH(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -142,7 +96,6 @@ void DataPH(){
 }
 
 void DataNitrogen(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -150,12 +103,9 @@ void DataNitrogen(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -166,7 +116,6 @@ void DataNitrogen(){
 }
 
 void DataPhospor(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -174,12 +123,9 @@ void DataPhospor(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -190,7 +136,6 @@ void DataPhospor(){
 }
 
 void DataKalium(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -198,12 +143,9 @@ void DataKalium(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -214,7 +156,6 @@ void DataKalium(){
 }
 
 void DataSalinitas(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -222,12 +163,9 @@ void DataSalinitas(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];
@@ -238,7 +176,6 @@ void DataSalinitas(){
 }
 
 void DataTDS(){
-//  byte i;
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -246,12 +183,9 @@ void DataTDS(){
   Serial2.flush();
   digitalWrite(DE, LOW);
   digitalWrite(RE, LOW);
-// delay to allow response bytes to be received!
   delay(200);
   for (byte i = 0; i < 7; i++) {
     values[i] = Serial2.read();
-//    Serial.print(values[i],HEX);
-//    Serial.print(' ');
   }
   int num1,num2,num3;
   num1=values[3];

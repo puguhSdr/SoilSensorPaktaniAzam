@@ -12,9 +12,6 @@ void bacaSensor()
 }
 
 
-
-
-
 void DataKelembaban(){
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
@@ -32,7 +29,7 @@ void DataKelembaban(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Kelembaban = (float)TotalHextoDec/10;
+  Kelembaban = ((float)TotalHextoDec/10) - EEPROMKelembaban;
 }
 
 void DataSuhu(){
@@ -55,7 +52,8 @@ void DataSuhu(){
   Suhu = ((float)TotalHextoDec/10) + EEPROMSuhu;
 }
 
-void DataKonduktifitas(){
+void DataKonduktifitas()
+{
   digitalWrite(DE,HIGH);
   digitalWrite(RE,HIGH);
   delay(10);
@@ -72,9 +70,7 @@ void DataKonduktifitas(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Konduktifitas = ((float)TotalHextoDec/10)+EEPROMKelembaban;
-
-
+  Konduktifitas = ((float)TotalHextoDec/10)+EEPROMKonduktifitas;
 }
 
 void DataPH(){
@@ -115,7 +111,7 @@ void DataNitrogen(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Nitrogen = (float)TotalHextoDec/10;
+  Nitrogen = ((float)TotalHextoDec/10)+EEPROMNitrogen;
 }
 
 void DataPhospor(){

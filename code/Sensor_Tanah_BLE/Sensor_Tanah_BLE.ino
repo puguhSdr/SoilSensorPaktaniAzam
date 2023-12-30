@@ -4,9 +4,12 @@
 #include <BLE2902.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>
+#include <Preferences.h>
+
+Preferences preferences;
 float phval= 7;
 // Jangan lupa. harus unik antara device 1 dengan yg lainnya
-#define BLE_NAME            "SNTPPKP-005"
+#define BLE_NAME            "SNTPPKP-001"
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
@@ -48,6 +51,19 @@ float Salinitas = 0;
 float TDS = 0;
 
 
+float EEPROMSuhu;
+float EEPROMKelembaban = 0;
+float EEPROMNitrogen= 0;
+float EEPROMPhospor= 0;
+float EEPROMKalium= 0;
+float EEPROMSalinitas= 0;
+float EEPROMKonduktifitas= 0;
+float EEPROMPH= 0;
+float EEPROMTDS= 0;
+
+
+const int JSON_BUFFER_SIZE = 256;
+
 #define DE  18
 #define RE  19
 
@@ -62,6 +78,9 @@ class MyCallbacks : public BLECharacteristicCallbacks {
       String valueToString = receivedValue.c_str();
       Serial.println(valueToString);
       DynamicJsonDocument doc(1024);
+      
+ //     StaticJsonDocument<JSON_BUFFER_SIZE> jsonBuffer;
+      
       DeserializationError error = deserializeJson(doc, receivedValue.c_str());
 
       if (error) {
@@ -84,6 +103,7 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         jsonResponse["method"] = "get";
         jsonResponse["idDevice"] = BLE_NAME;
         jsonResponse["suhu"] = Suhu;
+        Serial.print(Suhu);
         jsonResponse["kelembaban"] = Kelembaban;
         jsonResponse["nitrogen"] = Nitrogen;
         jsonResponse["phospor"] = Phospor;
@@ -92,6 +112,8 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         jsonResponse["konduktifitas"] = Konduktifitas;
         jsonResponse["ph"] = PH;
         jsonResponse["tds"] = TDS;
+
+ 
 
         String jsonString;
         serializeJson(jsonResponse, jsonString);
@@ -108,7 +130,28 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         jsonResponse["message"] = "success";
         jsonResponse["method"] = "patch";
         jsonResponse["idDevice"] = BLE_NAME;
-        saveToEEPROM(doc);
+        int eepromAddress = 0;
+        preferences.putFloat("suhup",doc["suhu"].as<float>());
+        preferences.putFloat("kelembabanp",doc["kelembaban"].as<float>());
+        preferences.putFloat("nitrogenp",doc["nitrogen"].as<float>());
+        preferences.putFloat("phosporp",doc["phospor"].as<float>());
+        preferences.putFloat("kaliump",doc["kalium"].as<float>());
+        preferences.putFloat("salinitasp",doc["salinitas"].as<float>());
+        preferences.putFloat("konduktifitasp",doc["konduktifitas"].as<float>());
+        preferences.putFloat("php",doc["ph"].as<float>());
+        preferences.putFloat("tdsp",doc["tds"].as<float>());
+        
+        //EEPROMSuhu = doc["suhu"].as<float>();
+       // EEPROM.put(eepromAddress, EEPROMSuhu);
+        //EEPROM.put(eepromAddress, doc["suhu"].as<float>());
+   //     Serial.println(doc["suhu"].as<float>());
+ //       EEPROM.commit();
+//       Serial.println(doc["suhu"] .as<float>());
+//        String messagetest =jsonResponse["method"];
+ //       Serial.println(messagetest);
+        //saveToEEPROM(doc);
+//saveToEEPROM(doc);
+//saveToEEPROM2();
 
         String jsonString;
         serializeJson(jsonResponse, jsonString);
@@ -116,19 +159,58 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         pCharacteristic->setValue(jsonString.c_str());
         pCharacteristic->notify();
       }
+
+
+      
       else if (std::string(reqMethod) == "kal") {
+       // EEPROMRead();
         DynamicJsonDocument jsonResponse(500);  
-        retrieveFromEEPROM(jsonResponse);
+//        retrieveFromEEPROM(jsonResponse);
         jsonResponse["status"] = true;
         jsonResponse["message"] = "success";
         jsonResponse["method"] = "kal";
+        jsonResponse["idDevice"] = BLE_NAME;
+
+
+
+
+
+        
+        EEPROMSuhu = preferences.getFloat("suhup",0);
+        EEPROMKelembaban = preferences.getFloat("kelembabanp",0);
+        EEPROMNitrogen = preferences.getFloat("nitrogenp",0);
+        EEPROMPhospor = preferences.getFloat("phosporp",0);
+        EEPROMKalium = preferences.getFloat("kaliump",0);
+        EEPROMSalinitas = preferences.getFloat("salinitasp",0);
+        EEPROMKonduktifitas = preferences.getFloat("konduktifitasp",0);
+        EEPROMPH = preferences.getFloat("php",0);
+        EEPROMTDS = preferences.getFloat("tdsp",0);
+
+        
+        jsonResponse["suhu"] = EEPROMSuhu;
+        Serial.println("EEPROMSuhu");
+        Serial.println(EEPROMSuhu);
+
+
+
+
+        
+        jsonResponse["kelembaban"] = EEPROMKelembaban;
+        jsonResponse["nitrogen"] = EEPROMNitrogen;
+        jsonResponse["phospor"] = EEPROMPhospor;
+        jsonResponse["kalium"] = EEPROMKalium;
+        jsonResponse["salinitas"] = EEPROMSalinitas;
+        jsonResponse["konduktifitas"] = EEPROMKonduktifitas;
+        jsonResponse["ph"] = EEPROMPH;
+        jsonResponse["tds"] = EEPROMTDS;
 
         String jsonString;
         serializeJson(jsonResponse, jsonString);
 
         pCharacteristic->setValue(jsonString.c_str());
         pCharacteristic->notify();
-      }else if (std::string(reqMethod) == "close") {
+      }
+      else if (std::string(reqMethod) == "close") {
         DynamicJsonDocument jsonResponse(500);  
         jsonResponse["status"] = true;
         jsonResponse["message"] = "success";
@@ -141,13 +223,43 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         pCharacteristic->setValue(jsonString.c_str());
         pCharacteristic->notify();
         // buat function untuk mereset esp32
-        ESP.restart();
+  //      ESP.restart();
       } else {
         pCharacteristic->setValue("Invalid request");
         pCharacteristic->notify();
       }
     }
   }
+
+
+
+
+
+
+
+
+
+  void saveToEEPROM2() {
+    
+    int eepromAddress = 50;
+
+    EEPROM.put(eepromAddress, EEPROMSuhu);
+
+    EEPROM.commit();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   void saveToEEPROM(const DynamicJsonDocument& doc) {
     if (EEPROM_SIZE < TDS_ADDRESS + sizeof(float)) {
@@ -157,9 +269,17 @@ class MyCallbacks : public BLECharacteristicCallbacks {
 
     int eepromAddress = SUHU_ADDRESS;
 
-    EEPROM.put(eepromAddress, doc["suhu"].as<float>());
+ //   EEPROM.put(eepromAddress, doc["suhu"].as<float>());
+ EEPROM.put(eepromAddress,11);
+    float coba;
+    EEPROM.get(eepromAddress, coba);
+    Serial.println("simpan kalibrasi suhu");
+        Serial.print("eeprom adr suhu = ");
+    Serial.println(eepromAddress);
+    Serial.println(coba);
     eepromAddress += sizeof(float);
-
+    Serial.print("eeprom adr rh = ");
+    Serial.println(eepromAddress);
     EEPROM.put(eepromAddress, doc["kelembaban"].as<float>());
     eepromAddress += sizeof(float);
 
@@ -187,7 +307,33 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     EEPROM.commit();
   }
 
-  void retrieveFromEEPROM(DynamicJsonDocument& doc) {
+  void EEPROMRead() {
+
+    int eepromAddress = 0;
+   EEPROM.get(eepromAddress, EEPROMSuhu);
+    Serial.print(EEPROMSuhu);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMKelembaban);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMNitrogen);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMPhospor);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMKalium);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMSalinitas);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMKonduktifitas);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMPH);
+    eepromAddress += sizeof(float);
+    EEPROM.get(eepromAddress, EEPROMTDS);
+    eepromAddress=50;
+  }
+
+
+
+    void retrieveFromEEPROM2(DynamicJsonDocument& doc) {
     if (EEPROM_SIZE < TDS_ADDRESS + sizeof(float)) {
       Serial.println("Not enough EEPROM space for variables.");
       return;
@@ -196,20 +342,39 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     int eepromAddress = SUHU_ADDRESS;
 
     doc["suhu"] = retrieveFloatFromEEPROM(eepromAddress);
+    Serial.print(retrieveFloatFromEEPROM(eepromAddress));
     doc["kelembaban"] = retrieveFloatFromEEPROM(eepromAddress);
     doc["nitrogen"] = retrieveFloatFromEEPROM(eepromAddress);
     doc["phospor"] = retrieveFloatFromEEPROM(eepromAddress);
+ //   eepromAddress += sizeof(float);
     doc["kalium"] = retrieveFloatFromEEPROM(eepromAddress);
+ //   eepromAddress += sizeof(float);
     doc["salinitas"] = retrieveFloatFromEEPROM(eepromAddress);
+ //   eepromAddress += sizeof(float);
     doc["konduktifitas"] = retrieveFloatFromEEPROM(eepromAddress);
+ //   eepromAddress += sizeof(float);
     doc["ph"] = retrieveFloatFromEEPROM(eepromAddress);
+ //   eepromAddress += sizeof(float);
     doc["tds"] = retrieveFloatFromEEPROM(eepromAddress);
   }
 
-  float retrieveFloatFromEEPROM(int& eepromAddress) {
+  float retrieveFloatFromEEPROM(int eepromAddress) {
     float value;
     EEPROM.get(eepromAddress, value);
-    eepromAddress += sizeof(float);
+    
+    if (isnan(value))
+    {
+      EEPROM.put(eepromAddress, 0.00);
+      EEPROM.commit();
+      Serial.println("eeprom kosong nih");
+      
+    }
+      else
+    {
+      Serial.println("eeprom ADA ISI");
+      Serial.println(value);
+    }
+//    eepromAddress += sizeof(float);
     return value;
   }
 };
@@ -220,6 +385,9 @@ void setup() {
   Serial2.begin(4800);
   pinMode(RE, OUTPUT);
   pinMode(DE, OUTPUT);
+  preferences.begin("my-app", false);
+  
+//  baca();
   
   Serial.println("Initializing Bluetooth");
 
@@ -247,4 +415,5 @@ void setup() {
 void loop() {
 
       bacaSensor(); 
+ //     baca();
 }

@@ -52,7 +52,7 @@ void DataSuhu(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Suhu = (float)TotalHextoDec/10;
+  Suhu = ((float)TotalHextoDec/10) + EEPROMSuhu;
 }
 
 void DataKonduktifitas(){
@@ -72,7 +72,9 @@ void DataKonduktifitas(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Konduktifitas = (float)TotalHextoDec/10;
+  Konduktifitas = ((float)TotalHextoDec/10)+EEPROMKelembaban;
+
+
 }
 
 void DataPH(){
@@ -92,7 +94,8 @@ void DataPH(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  PH = (float)TotalHextoDec/10;
+  PH = ((float)TotalHextoDec/10)+EEPROMPH;
+
 }
 
 void DataNitrogen(){
@@ -132,7 +135,8 @@ void DataPhospor(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Phospor = (float)TotalHextoDec/10;
+  Phospor = ((float)TotalHextoDec/10)+EEPROMPhospor;
+
 }
 
 void DataKalium(){
@@ -152,7 +156,11 @@ void DataKalium(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Kalium = (float)TotalHextoDec/10;
+  Kalium = ((float)TotalHextoDec/10)+EEPROMKalium;
+
+
+  
+
 }
 
 void DataSalinitas(){
@@ -172,7 +180,9 @@ void DataSalinitas(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  Salinitas = (float)TotalHextoDec/10;
+  Salinitas = ((float)TotalHextoDec/10)+EEPROMSalinitas;
+
+
 }
 
 void DataTDS(){
@@ -192,5 +202,6 @@ void DataTDS(){
   num2=values[4];
   num3=(num1<<8)|(num2);
   int TotalHextoDec = ("%x %d",num3,num3);
-  TDS = (float)TotalHextoDec/10;
+  TDS = ((float)TotalHextoDec/10)+EEPROMTDS;
+
 }
